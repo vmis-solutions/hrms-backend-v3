@@ -1,0 +1,6 @@
+@HRMS.WebUI_HostAddress = http://localhost:5186
+
+GET {{HRMS.WebUI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
