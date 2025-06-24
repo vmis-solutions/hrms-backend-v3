@@ -1,4 +1,5 @@
 using HRMS.Application.Interfaces;
+using HRMS.Application.Interfaces.Companies;
 using System.Threading.Tasks;
 
 namespace HRMS.Infrastructure.Persistence.Data

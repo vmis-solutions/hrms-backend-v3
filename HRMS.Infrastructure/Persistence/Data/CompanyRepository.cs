@@ -1,4 +1,4 @@
-using HRMS.Application.Interfaces;
+using HRMS.Application.Interfaces.Companies;
 using HRMS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;

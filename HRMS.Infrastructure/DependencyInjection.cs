@@ -25,6 +25,14 @@ namespace HRMS.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICompanyFacade, CompanyFacade>();
 
+            // Register Company use cases and facade
+            services.AddScoped<ICreateCompanyUseCase, HRMS.Application.UseCases.Companies.CreateCompanyUseCase>();
+            services.AddScoped<IUpdateCompanyUseCase, HRMS.Application.UseCases.Companies.UpdateCompanyUseCase>();
+            services.AddScoped<IDeleteCompanyUseCase, HRMS.Application.UseCases.Companies.DeleteCompanyUseCase>();
+            services.AddScoped<IGetCompanyByIdUseCase, HRMS.Application.UseCases.Companies.GetCompanyByIdUseCase>();
+            services.AddScoped<IGetAllCompaniesUseCase, HRMS.Application.UseCases.Companies.GetAllCompaniesUseCase>();
+            services.AddScoped<ICompanyFacade, HRMS.Application.UseCases.Companies.CompanyFacade>();
+
             // Add other infrastructure services as needed
             return services;
         }

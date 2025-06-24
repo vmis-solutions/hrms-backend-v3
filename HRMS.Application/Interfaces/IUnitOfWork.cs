@@ -1,3 +1,4 @@
+using HRMS.Application.Interfaces.Companies;
 using System.Threading.Tasks;
 
 namespace HRMS.Application.Interfaces
