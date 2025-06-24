@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace HRMS.Application.Interfaces.Companies
 {
-    public interface ICompanyRepository
+    // TODO: This repository should eventually inherit from IGeneric<Company>
+    public interface ICompanyRepository : IGeneric<Company>
     {
-        Task<Company?> GetByIdAsync(Guid id);
-        Task<List<Company>> GetAllAsync();
-        Task AddAsync(Company company);
-        Task UpdateAsync(Company company);
-        Task DeleteAsync(Guid id);
+        // Add company-specific repository methods here if needed
     }
 } 

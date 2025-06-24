@@ -1,4 +1,6 @@
-﻿using HRMS.Infrastructure.Persistence.Data;
+﻿using HRMS.Application.Interfaces;
+using HRMS.Application.Interfaces.Companies;
+using HRMS.Infrastructure.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

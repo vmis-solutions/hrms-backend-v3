@@ -1,4 +1,5 @@
 using HRMS.Application.Interfaces;
+using HRMS.Application.Interfaces.Companies;
 using HRMS.Application.NewFolder;
 using HRMS.Domain.Entities;
 using System;
