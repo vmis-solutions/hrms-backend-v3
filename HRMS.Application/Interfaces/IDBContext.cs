@@ -16,7 +16,6 @@ namespace HRMS.Application.Interfaces
         public DbSet<Department> Departments { get; }
         public DbSet<JobTitle> JobTitles { get; }
         public DbSet<LeaveApplication> LeaveApplications { get; }
-        public DbSet<LeaveDay> LeaveDays { get; }
         public DbSet<Attendance> Attendances { get; }
         public DbSet<Payroll> Payrolls { get; }
         public DbSet<LeaveBalance> LeaveBalances { get; }

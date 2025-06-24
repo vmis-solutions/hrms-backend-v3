@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HRMS.Domain.Entities
 {
-    public class Employee
+    public class Employee : BaseAuditable
     {
         // Identity reference - just a string ID, no direct dependency
         [Required]
@@ -52,13 +52,13 @@ namespace HRMS.Domain.Entities
         public DateTime DateHired { get; set; }
 
         [Required]
-        public string CompanyId { get; set; } = string.Empty;
+        public Guid CompanyId { get; set; } 
 
         [Required]
-        public string DepartmentId { get; set; } = string.Empty;
+        public Guid DepartmentId { get; set; }
 
         [Required]
-        public string JobTitleId { get; set; } = string.Empty;
+        public Guid JobTitleId { get; set; }
 
         [Required]
         public EmploymentStatus EmploymentStatus { get; set; }

@@ -15,9 +15,9 @@ namespace HRMS.Domain.Entities
         public string? Description { get; set; }
 
         [Required]
-        public string CompanyId { get; set; } = string.Empty;
+        public Guid CompanyId { get; set; }
 
-        public string? HeadEmployeeId { get; set; }
+        public Guid? HeadEmployeeId { get; set; }
 
         // Navigation properties
         public Company Company { get; set; } = null!;
