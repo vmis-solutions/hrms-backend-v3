@@ -1,18 +1,17 @@
 name: Create Branch on Issue Opened
-
 on:
   issues:
     types: [opened]
-
 jobs:
   create-branch:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Create and push branch for new issue from dev
+        with:
+          fetch-depth: 0
+      
+      - name: Create and push branch for new issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
@@ -21,16 +20,40 @@ jobs:
           # Sanitize issue title to create a safe branch name
           SAFE_TITLE=$(echo "${ISSUE_TITLE}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | cut -c1-40)
           BRANCH_NAME="issue-${ISSUE_NUMBER}-${SAFE_TITLE}"
-
-          echo "Creating branch: $BRANCH_NAME from dev"
-
+          
           # Configure git user for the action
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-
-          # Fetch and create branch from dev branch
-          git fetch origin dev
-          git checkout -b "$BRANCH_NAME" origin/dev
-
+          
+          # Fetch all remote branches
+          git fetch origin
+          
+          # Debug: List all available branches
+          echo "=== Available local branches ==="
+          git branch -a
+          echo "=== Available remote branches ==="
+          git ls-remote --heads origin
+          
+          # Check which base branch to use (try dev first, then master, then main)
+          if git show-ref --verify --quiet refs/remotes/origin/dev; then
+            BASE_BRANCH="origin/dev"
+            echo "Using dev as base branch"
+          elif git show-ref --verify --quiet refs/remotes/origin/master; then
+            BASE_BRANCH="origin/master"
+            echo "Using master as base branch"
+          elif git show-ref --verify --quiet refs/remotes/origin/main; then
+            BASE_BRANCH="origin/main"
+            echo "Using main as base branch"
+          else
+            echo "Error: No suitable base branch found (dev, master, or main)"
+            exit 1
+          fi
+          
+          # Create and checkout the new branch
+          echo "Creating branch: $BRANCH_NAME from $BASE_BRANCH"
+          git checkout -b "$BRANCH_NAME" "$BASE_BRANCH"
+          
           # Push branch to remote
           git push origin "$BRANCH_NAME"
+          
+          echo "Successfully created and pushed branch: $BRANCH_NAME"
