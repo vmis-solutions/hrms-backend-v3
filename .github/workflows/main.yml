@@ -1,0 +1,36 @@
+name: Create Branch on Issue Opened
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create and push branch for new issue from dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          # Sanitize issue title to create a safe branch name
+          SAFE_TITLE=$(echo "${ISSUE_TITLE}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | cut -c1-40)
+          BRANCH_NAME="issue-${ISSUE_NUMBER}-${SAFE_TITLE}"
+
+          echo "Creating branch: $BRANCH_NAME from dev"
+
+          # Configure git user for the action
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+          # Fetch and create branch from dev branch
+          git fetch origin features
+          git checkout -b "$BRANCH_NAME" origin/dev
+
+          # Push branch to remote
+          git push origin "$BRANCH_NAME"
