@@ -29,7 +29,7 @@ jobs:
           git config --global user.name "GitHub Action"
 
           # Fetch and create branch from dev branch
-          git fetch origin features
+          git fetch origin dev
           git checkout -b "$BRANCH_NAME" origin/dev
 
           # Push branch to remote
