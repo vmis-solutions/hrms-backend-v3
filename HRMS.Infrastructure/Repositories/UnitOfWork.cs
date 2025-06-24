@@ -3,7 +3,7 @@ using HRMS.Application.Interfaces.Companies;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
-namespace HRMS.Infrastructure.Persistence.Data
+namespace HRMS.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

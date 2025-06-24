@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HRMS.Infrastructure.Persistence.Data
+namespace HRMS.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGeneric<T> where T : class
     {
