@@ -2,6 +2,7 @@ using HRMS.Application.Interfaces;
 using HRMS.Application.NewFolder;
 using Microsoft.AspNetCore.Mvc;
 using HRMS.Application.Interfaces.Companies;
+using Microsoft.Extensions.Logging;
 
 namespace HRMS.WebUI.Controllers
 {
@@ -9,7 +10,8 @@ namespace HRMS.WebUI.Controllers
     public class CompanyController : BaseController
     {
         private readonly ICompanyFacade _companyFacade;
-        public CompanyController(ICompanyFacade companyFacade)
+        public CompanyController(ICompanyFacade companyFacade, ILogger<CompanyController> logger)
+            : base(logger)
         {
             _companyFacade = companyFacade;
         }
@@ -17,6 +19,7 @@ namespace HRMS.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            Logger.LogInformation("Getting all companies");
             var companies = await _companyFacade.GetAllAsync();
             return CreateResponse(200, "Success", companies);
         }
