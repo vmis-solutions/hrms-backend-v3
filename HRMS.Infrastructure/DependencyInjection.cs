@@ -1,5 +1,6 @@
 ﻿using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
+using HRMS.Application.UseCases.Companies;
 using HRMS.Infrastructure.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,15 +26,15 @@ namespace HRMS.Infrastructure
             // Register Company repository, unit of work, and facade
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICompanyFacade, CompanyFacade>();
+           // services.AddScoped<ICompanyFacade, CompanyFacade>();
 
             // Register Company use cases and facade
-            services.AddScoped<ICreateCompanyUseCase, HRMS.Application.UseCases.Companies.CreateCompanyUseCase>();
-            services.AddScoped<IUpdateCompanyUseCase, HRMS.Application.UseCases.Companies.UpdateCompanyUseCase>();
-            services.AddScoped<IDeleteCompanyUseCase, HRMS.Application.UseCases.Companies.DeleteCompanyUseCase>();
-            services.AddScoped<IGetCompanyByIdUseCase, HRMS.Application.UseCases.Companies.GetCompanyByIdUseCase>();
-            services.AddScoped<IGetAllCompaniesUseCase, HRMS.Application.UseCases.Companies.GetAllCompaniesUseCase>();
-            services.AddScoped<ICompanyFacade, HRMS.Application.UseCases.Companies.CompanyFacade>();
+            services.AddScoped<ICreateCompanyUseCase,CreateCompanyUseCase>();
+            services.AddScoped<IUpdateCompanyUseCase, UpdateCompanyUseCase>();
+            services.AddScoped<IDeleteCompanyUseCase,DeleteCompanyUseCase>();
+            services.AddScoped<IGetCompanyByIdUseCase, GetCompanyByIdUseCase>();
+            services.AddScoped<IGetAllCompaniesUseCase, GetAllCompaniesUseCase>();
+            services.AddScoped<ICompanyFacade,CompanyFacade>();
 
             // Add other infrastructure services as needed
             return services;
