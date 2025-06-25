@@ -14,4 +14,8 @@
     <ProjectReference Include="..\HRMS.Domain\HRMS.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\" />
+  </ItemGroup>
+
 </Project>

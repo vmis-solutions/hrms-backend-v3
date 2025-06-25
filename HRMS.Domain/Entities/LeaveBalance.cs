@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace HRMS.Domain.Entities
     public class LeaveBalance : BaseAuditable
     {
         [Required]
-        public string EmployeeId { get; set; } = string.Empty;
+        public Guid EmployeeId { get; set; }
 
         [Required]
         public int Year { get; set; }
@@ -20,7 +21,7 @@ namespace HRMS.Domain.Entities
 
         [Required]
         public int UsedPaidLeave { get; set; }
-
+        [NotMapped]
         public int RemainingPaidLeave => TotalPaidLeave - UsedPaidLeave;
 
         // Navigation properties

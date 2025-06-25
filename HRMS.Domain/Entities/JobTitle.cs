@@ -2,7 +2,7 @@
 
 namespace HRMS.Domain.Entities
 {
-    public class JobTitle
+    public class JobTitle : BaseAuditable
     {
         [Required]
         public string Title { get; set; } = string.Empty;
@@ -10,7 +10,7 @@ namespace HRMS.Domain.Entities
         public string? Description { get; set; }
 
         [Required]
-        public string DepartmentId { get; set; } = string.Empty;
+        public Guid DepartmentId { get; set; }
 
         // Navigation properties
         public Department Department { get; set; } = null!;
