@@ -1,21 +1,20 @@
+using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
 using HRMS.Application.NewFolder;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace HRMS.Application.UseCases.Companies
 {
-    public class GetAllCompaniesUseCase : IGetAllCompaniesUseCase
+    public class GetCompanyUseCase : IGetAllCompanyUseCase
     {
-        private readonly ICompanyRepository _companyRepository;
-        public GetAllCompaniesUseCase(ICompanyRepository companyRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public GetCompanyUseCase(IUnitOfWork unitOfWork)
         {
-            _companyRepository = companyRepository;
+           _unitOfWork = unitOfWork;
         }
         public async Task<List<CompanyDto>> ExecuteAsync()
         {
-            var companies = await _companyRepository.GetAllAsync();
+            var companies = await _unitOfWork.Company.GetAllAsync();
             return companies.Select(company => new CompanyDto
             {
                 Id = company.Id,

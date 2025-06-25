@@ -2,7 +2,6 @@ using HRMS.Application.Interfaces;
 using HRMS.Application.NewFolder;
 using Microsoft.AspNetCore.Mvc;
 using HRMS.Application.Interfaces.Companies;
-using Microsoft.Extensions.Logging;
 
 namespace HRMS.WebUI.Controllers
 {

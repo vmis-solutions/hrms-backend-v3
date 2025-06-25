@@ -1,3 +1,4 @@
+using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
 using HRMS.Application.NewFolder;
 using System;
@@ -7,14 +8,14 @@ namespace HRMS.Application.UseCases.Companies
 {
     public class GetCompanyByIdUseCase : IGetCompanyByIdUseCase
     {
-        private readonly ICompanyRepository _companyRepository;
-        public GetCompanyByIdUseCase(ICompanyRepository companyRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public GetCompanyByIdUseCase(IUnitOfWork unitOfWork)
         {
-            _companyRepository = companyRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<CompanyDto?> ExecuteAsync(Guid id)
         {
-            var company = await _companyRepository.GetByIdAsync(id);
+            var company = await _unitOfWork.Company.GetByIdAsync(id);
             if (company == null) return null;
             return new CompanyDto
             {
