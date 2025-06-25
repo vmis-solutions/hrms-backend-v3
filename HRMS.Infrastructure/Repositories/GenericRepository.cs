@@ -1,4 +1,5 @@
 using HRMS.Application.Interfaces;
+using HRMS.Infrastructure.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
