@@ -3,19 +3,24 @@ using HRMS.Application.Interfaces.Companies;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using HRMS.Infrastructure.Persistence.Data;
+using HRMS.Application.Departments;
 
 namespace HRMS.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public ICompanyRepository Companies { get; }
+        public IDepartmentRepository Department { get; }
+        public ICompanyRepository Company { get; }
+
+
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Companies = new CompanyRepository(context);
+            Company = new CompanyRepository(context);
+            Department = new DepartmentRepository(context);
         }
 
         public IGeneric<T> GetRepository<T>() where T : class

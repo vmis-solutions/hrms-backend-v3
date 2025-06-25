@@ -1,5 +1,5 @@
+using HRMS.Application.DTOs;
 using HRMS.Application.NewFolder;
-using System.Threading.Tasks;
 
 namespace HRMS.Application.Interfaces.Companies
 {

@@ -12,14 +12,14 @@ namespace HRMS.Application.UseCases.Companies
         private readonly IUpdateCompanyUseCase _update;
         private readonly IDeleteCompanyUseCase _delete;
         private readonly IGetCompanyByIdUseCase _getById;
-        private readonly IGetAllCompaniesUseCase _getAll;
+        private readonly IGetAllCompanyUseCase _getAll;
 
         public CompanyFacade(
             ICreateCompanyUseCase create,
             IUpdateCompanyUseCase update,
             IDeleteCompanyUseCase delete,
             IGetCompanyByIdUseCase getById,
-            IGetAllCompaniesUseCase getAll)
+            IGetAllCompanyUseCase getAll)
         {
             _create = create;
             _update = update;
