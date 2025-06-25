@@ -2,6 +2,7 @@ using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using HRMS.Infrastructure.Persistence.Data;
 
 namespace HRMS.Infrastructure.Repositories
 {
