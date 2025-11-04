@@ -13,6 +13,8 @@ namespace HRMS.Domain.Enums
         Contractual,
         ProjectBased,
         Resigned,
-        Terminated
+        Terminated,
+        Active,
+        Inactive
     }
 }

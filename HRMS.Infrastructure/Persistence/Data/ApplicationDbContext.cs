@@ -3,6 +3,7 @@ using HRMS.Domain.Entities;
 using HRMS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace HRMS.Infrastructure.Persistence.Data
 {
-    public class ApplicationDbContext : DbContext, IDBContext
+    public class ApplicationDbContext : IdentityDbContext<User>, IDBContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -38,6 +40,28 @@ namespace HRMS.Infrastructure.Persistence.Data
 
         public DbSet<LeaveBalance> LeaveBalances => Set<LeaveBalance>();
 
+        public DbSet<EmployeeDocs> EmployeeDocs => Set<EmployeeDocs>();
+
+        DbSet<ApprovalInfo> IDBContext.ApprovalInfos => throw new NotImplementedException();
+
+        DbSet<Employee> IDBContext.Employees => throw new NotImplementedException();
+
+        DbSet<Company> IDBContext.Companies => throw new NotImplementedException();
+
+        DbSet<Department> IDBContext.Departments => throw new NotImplementedException();
+
+        DbSet<JobTitle> IDBContext.JobTitles => throw new NotImplementedException();
+
+        DbSet<LeaveApplication> IDBContext.LeaveApplications => throw new NotImplementedException();
+
+        DbSet<Attendance> IDBContext.Attendances => throw new NotImplementedException();
+
+        DbSet<Payroll> IDBContext.Payrolls => throw new NotImplementedException();
+
+        DbSet<LeaveBalance> IDBContext.LeaveBalances => throw new NotImplementedException();
+
+        DbSet<EmployeeDocs> IDBContext.EmployeeDocs => throw new NotImplementedException();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -45,6 +69,15 @@ namespace HRMS.Infrastructure.Persistence.Data
 
             // Configure Entity Primary Keys and Base Properties
             ConfigureBaseEntities(modelBuilder);
+
+            // Apply global query filter for soft delete
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                .Where(e => typeof(BaseAuditable).IsAssignableFrom(e.ClrType) && !e.IsAbstract()))
+            {
+                var method = typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQuery), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                    .MakeGenericMethod(entityType.ClrType);
+                method.Invoke(null, new object[] { modelBuilder });
+            }
 
             // Configure Company
             ConfigureCompany(modelBuilder);
@@ -70,11 +103,19 @@ namespace HRMS.Infrastructure.Persistence.Data
             // Configure Payroll
             ConfigurePayroll(modelBuilder);
 
+            // Configure EmployeeDocs
+            ConfigureEmployeeDocs(modelBuilder);
+
             // Configure Indexes
             ConfigureIndexes(modelBuilder);
 
             // Seed Data (optional)
             SeedData(modelBuilder);
+        }
+
+        private static void SetGlobalQuery<T>(ModelBuilder builder) where T : BaseAuditable
+        {
+            builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
         }
 
         private void ConfigureBaseEntities(ModelBuilder modelBuilder)
@@ -356,12 +397,13 @@ namespace HRMS.Infrastructure.Persistence.Data
                 entity.HasOne(l => l.DepartmentHead)
                     .WithMany(e => e.LeaveApplicationsAsDepartmentHead)
                     .HasForeignKey(l => l.DepartmentHeadId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Restrict);
+                //.OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasOne(l => l.HrPersonnel)
                     .WithMany(e => e.LeaveApplicationsAsHrPersonnel)
                     .HasForeignKey(l => l.HrPersonnelId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -420,6 +462,40 @@ namespace HRMS.Infrastructure.Persistence.Data
 
                 entity.Property(e => e.NetPay)
                     .HasPrecision(18, 2);
+            });
+        }
+
+        private void ConfigureEmployeeDocs(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EmployeeDocs>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.DocumentName)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.DocumentType)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DocumentDescription)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+
+                entity.Property(e => e.DocumentPath)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.EmployeeId)
+                    .IsRequired()
+                    .HasMaxLength(36);
+
+                // One-to-many: Employee -> EmployeeDocs
+                entity.HasOne(d => d.Employee)
+                    .WithMany() // Assuming no navigation property in Employee for EmployeeDocs
+                    .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
@@ -496,6 +572,15 @@ namespace HRMS.Infrastructure.Persistence.Data
 
             var CreatedAt = new DateTime(2024, 06, 24, 0, 0, 0, DateTimeKind.Utc);
             var UpdatedAt = new DateTime(2024, 06, 24, 0, 0, 0, DateTimeKind.Utc);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "2c5e174e-3b0e-446f-86af-483d56fd7210", Name = "Administrator", NormalizedName = "ADMINISTRATOR".ToUpper() }
+                , new IdentityRole { Id = "25ab6d7e-585f-469e-902b-f60008bdfb03", Name = "Developer", NormalizedName = "DEVELOPER".ToUpper() }
+                , new IdentityRole { Id = "9911b550-e25d-4889-8d72-df82d884e7b7", Name = "SuperAdmin", NormalizedName = "SuperAdmin".ToUpper() }
+                , new IdentityRole { Id = "8d69da53-ca1b-4c83-85d8-99bd7fa9836c", Name = "Employee", NormalizedName = "EMPLOYEE".ToUpper() });
+
+            //Seeding the User to AspNetUsers table
+            
 
             // 🏢 Company
             modelBuilder.Entity<Company>().HasData(new Company

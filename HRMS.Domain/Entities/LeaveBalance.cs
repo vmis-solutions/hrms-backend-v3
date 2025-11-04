@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HRMS.Domain.Enums;
 
 namespace HRMS.Domain.Entities
 {
@@ -16,6 +17,19 @@ namespace HRMS.Domain.Entities
         [Required]
         public int Year { get; set; }
 
+        [Required]
+        public LeaveType LeaveType { get; set; }
+
+        [Required]
+        public int TotalDays { get; set; }
+
+        [Required]
+        public int UsedDays { get; set; }
+        
+        [NotMapped]
+        public int RemainingDays => TotalDays - UsedDays;
+
+        // Legacy properties for backward compatibility
         [Required]
         public int TotalPaidLeave { get; set; }
 

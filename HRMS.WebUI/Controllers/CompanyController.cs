@@ -1,32 +1,32 @@
 using HRMS.Application.Interfaces;
-using HRMS.Application.NewFolder;
+using HRMS.Application.DTOs.Companies;
 using Microsoft.AspNetCore.Mvc;
 using HRMS.Application.Interfaces.Companies;
 
 namespace HRMS.WebUI.Controllers
 {
     [Route("api/[controller]")]
-    public class CompanyController : BaseController
+    public class CompanyController : BaseController<CompanyController>
     {
-        private readonly ICompanyFacade _companyFacade;
-        public CompanyController(ICompanyFacade companyFacade, ILogger<CompanyController> logger)
+        private readonly ICompanyService _companyService;
+        public CompanyController(ICompanyService companyService, ILogger<CompanyController> logger)
             : base(logger)
         {
-            _companyFacade = companyFacade;
+            _companyService = companyService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             Logger.LogInformation("Getting all companies");
-            var companies = await _companyFacade.GetAllAsync();
+            var companies = await _companyService.GetAllAsync();
             return CreateResponse(200, "Success", companies);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var company = await _companyFacade.GetByIdAsync(id);
+            var company = await _companyService.GetByIdAsync(id);
             if (company == null)
                 return CreateResponse(404, "Company not found");
             return CreateResponse(200, "Success", company);
@@ -37,7 +37,7 @@ namespace HRMS.WebUI.Controllers
         {
             if (!ModelState.IsValid)
                 return CreateResponse(400, "Validation failed", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList());
-            var company = await _companyFacade.CreateAsync(dto);
+            var company = await _companyService.CreateAsync(dto);
             return CreateResponse(201, "Company created", company);
         }
 
@@ -46,7 +46,7 @@ namespace HRMS.WebUI.Controllers
         {
             if (!ModelState.IsValid)
                 return CreateResponse(400, "Validation failed", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList());
-            var company = await _companyFacade.UpdateAsync(dto);
+            var company = await _companyService.UpdateAsync(dto);
             if (company == null)
                 return CreateResponse(404, "Company not found");
             return CreateResponse(200, "Company updated", company);
@@ -55,7 +55,7 @@ namespace HRMS.WebUI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _companyFacade.DeleteAsync(id);
+            var result = await _companyService.DeleteAsync(id);
             if (!result)
                 return CreateResponse(404, "Company not found");
             return CreateResponse(200, "Company deleted");

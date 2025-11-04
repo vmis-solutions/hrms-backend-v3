@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 namespace HRMS.WebUI.Controllers
 {
     [ApiController]
-    public class BaseController : ControllerBase
+    public class BaseController<T> : ControllerBase
     {
-        protected readonly ILogger Logger;
+        protected readonly ILogger<T> Logger;
 
-        public BaseController(ILogger logger)
+        public BaseController(ILogger<T> logger)
         {
             Logger = logger;
         }

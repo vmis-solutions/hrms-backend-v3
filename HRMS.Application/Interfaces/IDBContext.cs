@@ -1,4 +1,5 @@
 ﻿using HRMS.Domain.Entities;
+using ed = HRMS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,7 @@ namespace HRMS.Application.Interfaces
         public DbSet<Attendance> Attendances { get; }
         public DbSet<Payroll> Payrolls { get; }
         public DbSet<LeaveBalance> LeaveBalances { get; }
+
+        public DbSet<ed.EmployeeDocs> EmployeeDocs { get; }
     }
 }

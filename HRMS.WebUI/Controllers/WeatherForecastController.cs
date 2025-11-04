@@ -5,7 +5,7 @@ namespace HRMS.WebUI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : BaseController
+    public class WeatherForecastController : BaseController<WeatherForecastController>
     {
         private static readonly string[] Summaries = new[]
         {

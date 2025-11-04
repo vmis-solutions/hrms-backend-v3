@@ -43,9 +43,13 @@ namespace HRMS.Domain.Entities
         [Required]
         public DateTime AppliedDate { get; set; }
 
+        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
+        public string Comments { get; set; } = string.Empty;
+
         // Approval workflow with proper foreign keys
-        public Guid DepartmentHeadId { get; set; }
-        public Guid HrPersonnelId { get; set; }
+        public Guid? DepartmentHeadId { get; set; }
+        public Guid? HrPersonnelId { get; set; }
 
         public ApprovalInfo? DepartmentHeadApproval { get; set; }
         public ApprovalInfo? HrAcknowledgment { get; set; }
