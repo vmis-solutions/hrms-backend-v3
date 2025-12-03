@@ -9,5 +9,7 @@ namespace HRMS.Application.DTOs.JobTitles
         public string? Description { get; set; }
         public Guid DepartmentId { get; set; }
         public string DepartmentName { get; set; } = string.Empty;
+        public Guid CompanyId { get; set; }
+        public string CompanyName { get; set; } = string.Empty;
     }
 } 

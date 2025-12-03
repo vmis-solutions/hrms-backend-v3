@@ -24,5 +24,6 @@ namespace HRMS.Domain.Entities
         public Employee? Head { get; set; }
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
         public ICollection<JobTitle> JobTitles { get; set; } = new List<JobTitle>();
+        public ICollection<DepartmentHrManager> HrManagers { get; set; } = new List<DepartmentHrManager>();
     }
 }

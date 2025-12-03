@@ -1,7 +1,7 @@
-﻿using HRMS.Application.Departments;
-using HRMS.Application.Interfaces;
+﻿using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
 using HRMS.Application.Interfaces.Departments;
+using HRMS.Application.Interfaces.DepartmentHrManagers;
 using HRMS.Infrastructure.Services;
 using HRMS.Infrastructure.Persistence.Data;
 using HRMS.Infrastructure.Repositories;
@@ -83,6 +83,9 @@ namespace HRMS.Infrastructure
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IDepartmentService, DepartmentService>();
 
+            // Register DepartmentHrManager service
+            services.AddScoped<IDepartmentHrManagerService, DepartmentHrManagerService>();
+
             // Register Employee repository and service
             services.AddScoped<HRMS.Application.Interfaces.Employees.IEmployeeRepository, HRMS.Infrastructure.Repositories.EmployeeRepository>();
             services.AddScoped<HRMS.Application.Interfaces.Employees.IEmployeeService, HRMS.Infrastructure.Services.EmployeeService>();
@@ -114,6 +117,9 @@ namespace HRMS.Infrastructure
 
             // Register Dashboard service
             services.AddScoped<HRMS.Application.Interfaces.Dashboard.IDashboardService, HRMS.Infrastructure.Services.DashboardService>();
+
+            // Register UserFacade
+            services.AddScoped<IUserFacade, UserFacade>();
 
             // Add other infrastructure services as needed
             return services;

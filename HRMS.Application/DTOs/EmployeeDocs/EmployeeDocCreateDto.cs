@@ -9,7 +9,6 @@ namespace HRMS.Application.DTOs.EmployeeDocs
         public string DocumentType { get; set; } = string.Empty;
         public string DocumentDescription { get; set; } = string.Empty;
         public IFormFile Document { get; set; } = null!;
-        public byte[]? File { get; set; }
         public Guid EmployeeId { get; set; }
     }
 } 

@@ -1,3 +1,4 @@
+using HRMS.Application.Interfaces;
 using HRMS.Application.Interfaces.Companies;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Persistence.Data;
@@ -21,7 +22,7 @@ namespace HRMS.Infrastructure.Repositories
             return await _context.Companies.FindAsync(id);
         }
 
-        public async Task<List<Company>> GetAllAsync()
+        public async Task<IEnumerable<Company>> GetAllAsync()
         {
             return await _context.Companies.ToListAsync();
         }
@@ -44,5 +45,12 @@ namespace HRMS.Infrastructure.Repositories
                 _context.Companies.Remove(company);
             }
         }
+
+        public async Task<Company?> FindByNameAsync(string name)
+        {
+            return await _context.Companies
+                .FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
+        }
+
     }
 } 

@@ -32,13 +32,22 @@ namespace HRMS.WebUI.Controllers
             return CreateResponse(200, "Success", company);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CompanyCreateDto dto)
         {
             if (!ModelState.IsValid)
                 return CreateResponse(400, "Validation failed", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList());
-            var company = await _companyService.CreateAsync(dto);
-            return CreateResponse(201, "Company created", company);
+            
+            try
+            {
+                var company = await _companyService.CreateAsync(dto);
+                return CreateResponse(201, "Company created", company);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return CreateResponse(409, ex.Message);
+            }
         }
 
         [HttpPut]
@@ -46,10 +55,18 @@ namespace HRMS.WebUI.Controllers
         {
             if (!ModelState.IsValid)
                 return CreateResponse(400, "Validation failed", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList());
-            var company = await _companyService.UpdateAsync(dto);
-            if (company == null)
-                return CreateResponse(404, "Company not found");
-            return CreateResponse(200, "Company updated", company);
+            
+            try
+            {
+                var company = await _companyService.UpdateAsync(dto);
+                if (company == null)
+                    return CreateResponse(404, "Company not found");
+                return CreateResponse(200, "Company updated", company);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return CreateResponse(409, ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]

@@ -1,3 +1,4 @@
+using HRMS.Application.Common;
 using HRMS.Application.DTOs.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace HRMS.Infrastructure.Identity
     {
         Task<UserDto> CreateUserAsync(UserCreateDto dto);
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<PagedResult<UserDto>> GetAllUsersPaginatedAsync(int pageNumber, int pageSize, string? searchTerm = null);
         Task<UserDto?> GetUserByIdAsync(string id);
         Task<UserDto> UpdateUserAsync(string id, UserCreateDto dto);
         Task<bool> DeleteUserAsync(string id);

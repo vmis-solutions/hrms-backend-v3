@@ -6,7 +6,6 @@ namespace HRMS.Domain.Entities
     public class Employee : BaseAuditable
     {
         // Identity reference - just a string ID, no direct dependency
-        [Required]
         public string UserId { get; set; } = string.Empty;
 
         // Personal Info (from Identity, duplicated for domain operations)
@@ -79,6 +78,9 @@ namespace HRMS.Domain.Entities
         // Leave applications where this employee is approver
         public ICollection<LeaveApplication> LeaveApplicationsAsDepartmentHead { get; set; } = new List<LeaveApplication>();
         public ICollection<LeaveApplication> LeaveApplicationsAsHrPersonnel { get; set; } = new List<LeaveApplication>();
+
+        // Departments where this employee is HR manager
+        public ICollection<DepartmentHrManager> ManagedDepartments { get; set; } = new List<DepartmentHrManager>();
 
         // Domain methods
         public string GetFullName() => $"{FirstName} {LastName}";

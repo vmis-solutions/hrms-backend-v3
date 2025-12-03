@@ -1,3 +1,4 @@
+using HRMS.Application.Common;
 using HRMS.Application.DTOs.Employees;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace HRMS.Application.Interfaces.Employees
     {
         Task<EmployeeDto?> GetEmployeeByIdAsync(Guid id);
         Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync();
+        Task<PagedResult<EmployeeDto>> GetEmployeesByUserRoleAsync(Guid userId, string role, int pageNumber, int pageSize, string? searchTerm = null);
         Task<EmployeeDto> CreateEmployeeAsync(EmployeeCreateDto dto);
         Task<EmployeeDto> UpdateEmployeeAsync(EmployeeUpdateDto dto);
         Task DeleteEmployeeAsync(Guid id);

@@ -1,11 +1,17 @@
 using HRMS.Application.DTOs.JobTitles;
 using HRMS.Application.Interfaces.JobTitles;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace HRMS.WebUI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class JobTitleController : BaseController<JobTitleController>
     {
         private readonly IJobTitleService _jobTitleService;
@@ -16,13 +22,24 @@ namespace HRMS.WebUI.Controllers
         }
 
         /// <summary>
-        /// Get all job titles
+        /// Get job titles based on HR access rules.
+        /// HR Managers receive all job titles, others only those for their managed departments.
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? search = null)
         {
-            Logger.LogInformation("Getting all job titles");
-            var jobTitles = await _jobTitleService.GetAllJobTitlesAsync();
+            Logger.LogInformation("Getting job titles based on user role with pagination");
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+            if (string.IsNullOrEmpty(userIdString))
+                return CreateResponse(401, "User identifier not found in token");
+
+            if (!Guid.TryParse(userIdString, out Guid userId))
+                return CreateResponse(400, "Invalid user identifier format");
+
+            var role = User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("role") ?? string.Empty;
+
+            var jobTitles = await _jobTitleService.GetJobTitlesByUserRoleAsync(userId, role, pageNumber, pageSize, search);
             return CreateResponse(200, "Success", jobTitles);
         }
 

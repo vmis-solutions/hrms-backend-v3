@@ -49,6 +49,13 @@ namespace HRMS.Infrastructure.Services
 
         public async Task<CompanyDto> CreateAsync(CompanyCreateDto dto)
         {
+            // Check if a company with the same name already exists
+            var existingCompany = await _unitOfWork.Company.FindByNameAsync(dto.Name);
+            if (existingCompany != null)
+            {
+                throw new InvalidOperationException($"A company with the name '{dto.Name}' already exists.");
+            }
+
             var company = new Company
             {
                 Id = Guid.NewGuid(),
@@ -79,6 +86,13 @@ namespace HRMS.Infrastructure.Services
         {
             var company = await _unitOfWork.Company.GetByIdAsync(dto.Id);
             if (company == null) return null;
+
+            // Check if another company with the same name already exists (excluding current company)
+            var existingCompany = await _unitOfWork.Company.FindByNameAsync(dto.Name);
+            if (existingCompany != null && existingCompany.Id != dto.Id)
+            {
+                throw new InvalidOperationException($"A company with the name '{dto.Name}' already exists.");
+            }
 
             company.Name = dto.Name;
             company.Description = dto.Description;

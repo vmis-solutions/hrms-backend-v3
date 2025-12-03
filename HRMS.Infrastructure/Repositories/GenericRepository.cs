@@ -47,5 +47,10 @@ namespace HRMS.Infrastructure.Repositories
                 _dbSet.Remove(entity);
             }
         }
+
+        Task<IEnumerable<T>> IGeneric<T>.GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 } 

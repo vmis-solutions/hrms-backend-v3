@@ -22,5 +22,7 @@ namespace HRMS.Application.Interfaces
         public DbSet<LeaveBalance> LeaveBalances { get; }
 
         public DbSet<ed.EmployeeDocs> EmployeeDocs { get; }
+
+        public DbSet<DepartmentHrManager> DepartmentHrManagers { get; }
     }
 }

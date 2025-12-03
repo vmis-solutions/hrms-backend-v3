@@ -197,6 +197,48 @@ namespace HRMS.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRMS.Domain.Entities.DepartmentHrManager", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasMaxLength(36)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasMaxLength(36)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("DepartmentId", "EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("DepartmentHrManagers");
+                });
+
             modelBuilder.Entity("HRMS.Domain.Entities.Employee", b =>
                 {
                     b.Property<Guid>("Id")
@@ -961,6 +1003,25 @@ namespace HRMS.Infrastructure.Migrations
                     b.Navigation("Head");
                 });
 
+            modelBuilder.Entity("HRMS.Domain.Entities.DepartmentHrManager", b =>
+                {
+                    b.HasOne("HRMS.Domain.Entities.Department", "Department")
+                        .WithMany("HrManagers")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRMS.Domain.Entities.Employee", "Employee")
+                        .WithMany("ManagedDepartments")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("HRMS.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("HRMS.Domain.Entities.Company", "Company")
@@ -1173,6 +1234,8 @@ namespace HRMS.Infrastructure.Migrations
                 {
                     b.Navigation("Employees");
 
+                    b.Navigation("HrManagers");
+
                     b.Navigation("JobTitles");
                 });
 
@@ -1187,6 +1250,8 @@ namespace HRMS.Infrastructure.Migrations
                     b.Navigation("LeaveApplicationsAsDepartmentHead");
 
                     b.Navigation("LeaveApplicationsAsHrPersonnel");
+
+                    b.Navigation("ManagedDepartments");
 
                     b.Navigation("Payrolls");
                 });

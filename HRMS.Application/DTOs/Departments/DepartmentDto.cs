@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace HRMS.Application.DTOs.Departments
 {
@@ -10,5 +11,7 @@ namespace HRMS.Application.DTOs.Departments
         public Guid CompanyId { get; set; }
         public Guid? HeadEmployeeId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
+        public int EmployeeCount { get; set; }
+        public List<DepartmentHrManagerDto> HrManagers { get; set; } = new List<DepartmentHrManagerDto>();
     }
 } 

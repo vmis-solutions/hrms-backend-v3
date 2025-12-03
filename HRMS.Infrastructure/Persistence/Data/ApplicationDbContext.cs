@@ -42,6 +42,8 @@ namespace HRMS.Infrastructure.Persistence.Data
 
         public DbSet<EmployeeDocs> EmployeeDocs => Set<EmployeeDocs>();
 
+        public DbSet<DepartmentHrManager> DepartmentHrManagers => Set<DepartmentHrManager>();
+
         DbSet<ApprovalInfo> IDBContext.ApprovalInfos => throw new NotImplementedException();
 
         DbSet<Employee> IDBContext.Employees => throw new NotImplementedException();
@@ -105,6 +107,9 @@ namespace HRMS.Infrastructure.Persistence.Data
 
             // Configure EmployeeDocs
             ConfigureEmployeeDocs(modelBuilder);
+
+            // Configure DepartmentHrManager
+            ConfigureDepartmentHrManager(modelBuilder);
 
             // Configure Indexes
             ConfigureIndexes(modelBuilder);
@@ -496,6 +501,37 @@ namespace HRMS.Infrastructure.Persistence.Data
                     .WithMany() // Assuming no navigation property in Employee for EmployeeDocs
                     .HasForeignKey(d => d.EmployeeId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
+
+        private void ConfigureDepartmentHrManager(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DepartmentHrManager>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.DepartmentId)
+                    .IsRequired()
+                    .HasMaxLength(36);
+
+                entity.Property(e => e.EmployeeId)
+                    .IsRequired()
+                    .HasMaxLength(36);
+
+                // Many-to-many: Department <-> Employee (HR Managers)
+                entity.HasOne(dhm => dhm.Department)
+                    .WithMany(d => d.HrManagers)
+                    .HasForeignKey(dhm => dhm.DepartmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(dhm => dhm.Employee)
+                    .WithMany(e => e.ManagedDepartments)
+                    .HasForeignKey(dhm => dhm.EmployeeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Ensure unique combination of Department and Employee
+                entity.HasIndex(e => new { e.DepartmentId, e.EmployeeId })
+                    .IsUnique();
             });
         }
 

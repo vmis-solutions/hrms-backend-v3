@@ -8,6 +8,6 @@ namespace HRMS.Application.Interfaces.Companies
     // TODO: This repository should eventually inherit from IGeneric<Company>
     public interface ICompanyRepository : IGeneric<Company>
     {
-        // Add company-specific repository methods here if needed
+        Task<Company?> FindByNameAsync(string name);
     }
 } 

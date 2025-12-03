@@ -1,11 +1,21 @@
 using HRMS.Application.Interfaces;
 using HRMS.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace HRMS.Application.Departments
+namespace HRMS.Application.Interfaces.Departments
 {
-    // TODO: This repository should eventually inherit from IGeneric<Company>
     public interface IDepartmentRepository : IGeneric<Department>
     {
-        // Add company-specific repository methods here if needed
+        Task<Department?> GetByIdWithHrManagersAsync(Guid id);
+        Task<List<DepartmentHrManager>> GetHrManagersByDepartmentIdAsync(Guid departmentId);
+        Task<DepartmentHrManager?> GetHrManagerByIdAsync(Guid id);
+        Task<DepartmentHrManager?> GetHrManagerByDepartmentAndEmployeeAsync(Guid departmentId, Guid employeeId);
+        Task AddHrManagerAsync(DepartmentHrManager departmentHrManager);
+        Task UpdateHrManagerAsync(DepartmentHrManager departmentHrManager);
+        Task RemoveHrManagerAsync(Guid id);
+        Task<bool> HrManagerExistsAsync(Guid departmentId, Guid employeeId);
+        Task<List<Department>> GetDepartmentsManagedByUserAsync(string userId);
     }
 } 

@@ -11,18 +11,18 @@ namespace HRMS.Infrastructure.Services
 {
     public class EmployeeDocService : IEmployeeDocService
     {
-        private readonly IEmployeeDocRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IFileService _fileService;
 
-        public EmployeeDocService(IEmployeeDocRepository repository, IFileService fileService)
+        public EmployeeDocService(IUnitOfWork repository, IFileService fileService)
         {
-            _repository = repository;
+            _unitOfWork = repository;
             _fileService = fileService;
         }
 
         public async Task<IEnumerable<EmployeeDocDto>> GetAllEmployeeDocsAsync()
         {
-            var employeeDocs = await _repository.GetAllAsync();
+            var employeeDocs = await _unitOfWork.EmployeeDoc.GetAllAsync();
             return employeeDocs.Select(ed => new EmployeeDocDto
             {
                 Id = ed.Id,
@@ -38,7 +38,7 @@ namespace HRMS.Infrastructure.Services
 
         public async Task<EmployeeDocDto?> GetEmployeeDocByIdAsync(Guid id)
         {
-            var employeeDoc = await _repository.GetByIdAsync(id);
+            var employeeDoc = await _unitOfWork.EmployeeDoc.GetByIdAsync(id);
             if (employeeDoc == null) return null;
 
             return new EmployeeDocDto
@@ -56,7 +56,7 @@ namespace HRMS.Infrastructure.Services
 
         public async Task<IEnumerable<EmployeeDocDto>> GetEmployeeDocsByEmployeeIdAsync(Guid employeeId)
         {
-            var employeeDocs = await _repository.GetByEmployeeIdAsync(employeeId);
+            var employeeDocs = await _unitOfWork.EmployeeDoc.GetByEmployeeIdAsync(employeeId);
             return employeeDocs.Select(ed => new EmployeeDocDto
             {
                 Id = ed.Id,
@@ -81,13 +81,14 @@ namespace HRMS.Infrastructure.Services
                 DocumentType = dto.DocumentType,
                 DocumentName = dto.DocumentName,
                 FilePath = filePath,
-                FileSize = dto.File.Length,
                 UploadedDate = DateTime.UtcNow,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await _repository.AddAsync(employeeDoc);
+            await _unitOfWork.EmployeeDoc.AddAsync(employeeDoc);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return new EmployeeDocDto
             {
@@ -103,7 +104,7 @@ namespace HRMS.Infrastructure.Services
 
         public async Task<EmployeeDocDto?> UpdateEmployeeDocAsync(EmployeeDocUpdateDto dto)
         {
-            var employeeDoc = await _repository.GetByIdAsync(dto.Id);
+            var employeeDoc = await _unitOfWork.EmployeeDoc.GetByIdAsync(dto.Id);
             if (employeeDoc == null) return null;
 
             employeeDoc.DocumentType = dto.DocumentType;
@@ -121,7 +122,8 @@ namespace HRMS.Infrastructure.Services
                 employeeDoc.FileSize = dto.Document.Length;
             }
 
-            await _repository.UpdateAsync(employeeDoc);
+            await _unitOfWork.EmployeeDoc.UpdateAsync(employeeDoc);
+            await _unitOfWork.SaveChangesAsync();
 
             return new EmployeeDocDto
             {
@@ -137,13 +139,15 @@ namespace HRMS.Infrastructure.Services
 
         public async Task DeleteEmployeeDocAsync(Guid id)
         {
-            var employeeDoc = await _repository.GetByIdAsync(id);
+            var employeeDoc = await _unitOfWork.EmployeeDoc.GetByIdAsync(id);
             if (employeeDoc == null) throw new Exception("Employee document not found");
 
             // Delete file from storage
             await _fileService.DeleteFileAsync(employeeDoc.FilePath);
 
-            await _repository.DeleteAsync(employeeDoc.Id);
+            await _unitOfWork.EmployeeDoc.DeleteAsync(employeeDoc.Id);
+
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
