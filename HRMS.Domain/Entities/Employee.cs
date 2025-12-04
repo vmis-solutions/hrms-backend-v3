@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HRMS.Domain.Entities
 {
-    public class Employee
+    public class Employee : BaseAuditable
     {
         // Identity reference - just a string ID, no direct dependency
-        [Required]
         public string UserId { get; set; } = string.Empty;
 
         // Personal Info (from Identity, duplicated for domain operations)
@@ -52,13 +51,13 @@ namespace HRMS.Domain.Entities
         public DateTime DateHired { get; set; }
 
         [Required]
-        public string CompanyId { get; set; } = string.Empty;
+        public Guid CompanyId { get; set; } 
 
         [Required]
-        public string DepartmentId { get; set; } = string.Empty;
+        public Guid DepartmentId { get; set; }
 
         [Required]
-        public string JobTitleId { get; set; } = string.Empty;
+        public Guid JobTitleId { get; set; }
 
         [Required]
         public EmploymentStatus EmploymentStatus { get; set; }
@@ -79,6 +78,9 @@ namespace HRMS.Domain.Entities
         // Leave applications where this employee is approver
         public ICollection<LeaveApplication> LeaveApplicationsAsDepartmentHead { get; set; } = new List<LeaveApplication>();
         public ICollection<LeaveApplication> LeaveApplicationsAsHrPersonnel { get; set; } = new List<LeaveApplication>();
+
+        // Departments where this employee is HR manager
+        public ICollection<DepartmentHrManager> ManagedDepartments { get; set; } = new List<DepartmentHrManager>();
 
         // Domain methods
         public string GetFullName() => $"{FirstName} {LastName}";

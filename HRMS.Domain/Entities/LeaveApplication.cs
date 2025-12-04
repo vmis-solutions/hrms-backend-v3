@@ -11,7 +11,7 @@ namespace HRMS.Domain.Entities
     public class LeaveApplication : BaseAuditable
     {
         [Required]
-        public string EmployeeId { get; set; } = string.Empty;
+        public Guid EmployeeId { get; set; }
 
         [Required]
         public LeaveType LeaveType { get; set; }
@@ -43,9 +43,13 @@ namespace HRMS.Domain.Entities
         [Required]
         public DateTime AppliedDate { get; set; }
 
+        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
+        public string Comments { get; set; } = string.Empty;
+
         // Approval workflow with proper foreign keys
-        public string? DepartmentHeadId { get; set; }
-        public string? HrPersonnelId { get; set; }
+        public Guid? DepartmentHeadId { get; set; }
+        public Guid? HrPersonnelId { get; set; }
 
         public ApprovalInfo? DepartmentHeadApproval { get; set; }
         public ApprovalInfo? HrAcknowledgment { get; set; }
@@ -56,7 +60,7 @@ namespace HRMS.Domain.Entities
         public Employee? HrPersonnel { get; set; }
 
         // Domain methods
-        public bool CanBeApprovedBy(string employeeId) =>
+        public bool CanBeApprovedBy(Guid employeeId) =>
             Status == LeaveStatus.Pending && DepartmentHeadId == employeeId;
 
         public void ApproveByDepartmentHead(string approvedBy, string? comments = null)

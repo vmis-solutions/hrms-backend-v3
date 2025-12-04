@@ -1,0 +1,28 @@
+services:
+  # HRMS API
+  hrms-api:
+    build:
+      context: .
+      dockerfile: HRMS.WebUI/Dockerfile
+    container_name: hrms-management-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER},${DB_PORT};Database=${DB_NAME};User Id=${DB_USERNAME};Password=${DB_PASSWORD};TrustServerCertificate=true;
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Jwt__ExpiryInMinutes=${JWT_EXPIRY_IN_MINUTES:-60}
+    ports:
+      - "9001:5000"
+    volumes:
+      - ./HRMS.WebUI/wwwroot/EmployeeDocs:/app/wwwroot/EmployeeDocs
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/swagger/index.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+

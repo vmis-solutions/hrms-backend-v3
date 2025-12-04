@@ -10,7 +10,7 @@ namespace HRMS.Domain.Entities
     public class Payroll : BaseAuditable
     {
         [Required]
-        public string EmployeeId { get; set; } = string.Empty;
+        public Guid EmployeeId { get; set; }
 
         [Required]
         public DateTime PeriodStart { get; set; }

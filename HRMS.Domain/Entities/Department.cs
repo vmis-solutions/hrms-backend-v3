@@ -15,14 +15,15 @@ namespace HRMS.Domain.Entities
         public string? Description { get; set; }
 
         [Required]
-        public string CompanyId { get; set; } = string.Empty;
+        public Guid CompanyId { get; set; }
 
-        public string? HeadEmployeeId { get; set; }
+        public Guid? HeadEmployeeId { get; set; }
 
         // Navigation properties
         public Company Company { get; set; } = null!;
         public Employee? Head { get; set; }
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
         public ICollection<JobTitle> JobTitles { get; set; } = new List<JobTitle>();
+        public ICollection<DepartmentHrManager> HrManagers { get; set; } = new List<DepartmentHrManager>();
     }
 }
