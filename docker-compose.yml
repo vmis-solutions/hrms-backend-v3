@@ -14,8 +14,7 @@ services:
       - Jwt__Audience=${JWT_AUDIENCE}
       - Jwt__ExpiryInMinutes=${JWT_EXPIRY_IN_MINUTES:-60}
     ports:
-      - "9000:5000"
-      - "9001:5001"
+      - "9001:5111"
     volumes:
       - ./HRMS.WebUI/wwwroot/EmployeeDocs:/app/wwwroot/EmployeeDocs
       - ./logs:/app/logs
@@ -26,4 +25,5 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    depends_on: []
 
