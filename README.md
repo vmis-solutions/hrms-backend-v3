@@ -48,6 +48,7 @@ hrms-backend-v3/
    JWT_ISSUER=HRMS-API
    JWT_AUDIENCE=HRMS-Client
    JWT_EXPIRY_IN_MINUTES=60
+   ENABLE_SWAGGER=true
    ```
 
 2. Build and run:
@@ -95,6 +96,7 @@ hrms-backend-v3/
 | `JWT_ISSUER` | JWT issuer | Yes |
 | `JWT_AUDIENCE` | JWT audience | Yes |
 | `JWT_EXPIRY_IN_MINUTES` | Token expiry in minutes (default: 60) | No |
+| `ENABLE_SWAGGER` | Enable Swagger UI in production (default: true) | No |
 
 ## Port Configuration
 

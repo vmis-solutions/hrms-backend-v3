@@ -62,12 +62,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+// Enable Swagger in all environments (including Production)
+// Can be controlled via ENABLE_SWAGGER environment variable (defaults to true)
+var enableSwagger = builder.Configuration.GetValue<bool>("EnableSwagger", true);
+if (enableSwagger)
+{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRMS API v1");
         c.RoutePrefix = string.Empty; // Set Swagger UI at root URL
     });
+}
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
