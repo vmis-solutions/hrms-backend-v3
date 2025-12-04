@@ -1,30 +1,49 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+# Use the official .NET 9.0 runtime as base image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5000
+EXPOSE 5001
 
-
-# This stage is used to build the service project
+# Use the official .NET 9.0 SDK for building
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copy project files
 COPY ["HRMS.WebUI/HRMS.WebUI.csproj", "HRMS.WebUI/"]
-RUN dotnet restore "./HRMS.WebUI/HRMS.WebUI.csproj"
+COPY ["HRMS.Infrastructure/HRMS.Infrastructure.csproj", "HRMS.Infrastructure/"]
+COPY ["HRMS.Application/HRMS.Application.csproj", "HRMS.Application/"]
+COPY ["HRMS.Domain/HRMS.Domain.csproj", "HRMS.Domain/"]
+
+# Restore dependencies
+RUN dotnet restore "HRMS.WebUI/HRMS.WebUI.csproj"
+
+# Copy the rest of the source code
 COPY . .
+
+# Build the application
 WORKDIR "/src/HRMS.WebUI"
-RUN dotnet build "./HRMS.WebUI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "HRMS.WebUI.csproj" -c Release -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# Publish the application
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./HRMS.WebUI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "HRMS.WebUI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Final stage/image
 FROM base AS final
 WORKDIR /app
+
+# Copy the published application
 COPY --from=publish /app/publish .
+
+# Create directory for uploaded documents
+RUN mkdir -p /app/wwwroot/EmployeeDocs
+
+# Set environment variables
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5000/swagger/index.html || exit 1
+
 ENTRYPOINT ["dotnet", "HRMS.WebUI.dll"]
