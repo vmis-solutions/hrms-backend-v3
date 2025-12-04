@@ -48,9 +48,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Your Next.js dev server port
+        policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -74,7 +74,7 @@ if (enableSwagger)
         c.RoutePrefix = string.Empty; // Set Swagger UI at root URL
     });
 }
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
